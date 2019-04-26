@@ -16,6 +16,9 @@ package cmd
 
 import (
 	"log"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/hehanlin/taobao_category/logic"
 	"github.com/spf13/cobra"
@@ -24,25 +27,41 @@ import (
 // fetch_propsCmd represents the fetch_props command
 var fetch_propsCmd = &cobra.Command{
 	Use:   "fetch_props",
-	Short: "传入淘宝发布类目id(cid), 返回该类目下的关键(描述)属性和销售(sku)属性",
+	Short: "传入淘宝发布类目id(cid,多个用英文逗号分隔), 返回该类目下的关键(描述)属性和销售(sku)属性",
 	Long: `example: taobao_category fetch_props --cid 50010850 --token 7abb3b767e
 	return: 一个包含所有该类目的属性csv文件`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if err := logic.Fetch_props(cid, token); err != nil {
-			log.Fatal(err)
+		cidsStr = strings.TrimSpace(cidsStr)
+		if cidsStr == "" {
+			log.Fatal("请传入cids")
 		}
+		cidStrArr := strings.Split(cidsStr, ",")
+		for _, s := range cidStrArr {
+			cid, err := strconv.Atoi(s)
+			if err != nil {
+				log.Fatal("%s不是合法的cid", s)
+			}
+
+			if err := logic.Fetch_props(cid, token); err != nil {
+				log.Printf("导出失败: cid: %d, error: %s", cid, err.Error())
+			} else {
+				log.Printf("导出成功: cid: %d, 文件: %d.csv\n", cid, cid)
+			}
+			time.Sleep(6 * Second)
+		}
+		log.Println("运行结束!")
 	},
 }
 
 var (
-	cid   int
-	token string
+	cidsStr string
+	token   string
 )
 
 func init() {
 	RootCmd.AddCommand(fetch_propsCmd)
 
-	fetch_propsCmd.PersistentFlags().IntVarP(&cid, "cid", "c", -1, "传入的类目id")
+	fetch_propsCmd.PersistentFlags().StringVarP(&cidsStr, "cids", "c", "", "传入的类目id")
 	fetch_propsCmd.PersistentFlags().StringVarP(&token, "token", "t", "", "淘宝token, 登录淘宝账号后，cookie中的tb_token")
 
 }
