@@ -47,7 +47,7 @@ var fetch_propsCmd = &cobra.Command{
 			} else {
 				log.Printf("导出成功: cid: %d, 文件: %d.csv\n", cid, cid)
 			}
-			time.Sleep(6 * Second)
+			time.Sleep(6 * time.Second)
 		}
 		log.Println("运行结束!")
 	},
