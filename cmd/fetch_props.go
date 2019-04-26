@@ -43,11 +43,12 @@ var fetch_propsCmd = &cobra.Command{
 			}
 
 			if err := logic.Fetch_props(cid, token); err != nil {
-				log.Printf("导出失败: cid: %d, error: %s", cid, err.Error())
+				log.Printf("导出失败: cid: %d, error: %s\n", cid, err.Error())
 			} else {
-				log.Printf("导出成功: cid: %d, 文件: %d.csv\n", cid, cid)
+				log.Printf("导出成功: cid: %d\n", cid)
 			}
 			time.Sleep(6 * time.Second)
+
 		}
 		log.Println("运行结束!")
 	},

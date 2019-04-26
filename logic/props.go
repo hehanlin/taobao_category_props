@@ -51,7 +51,7 @@ func Fetch_props(cid int, token string) error {
 		return errors.New("找不到该类目")
 	}
 
-	log.Println("cid: %d, 类目名: %s", cnameData.ItemcatsGetResponse.ItemCats.ItemCat[0].Name)
+	log.Println("cid: %d, 类目名: %s", cid, cnameData.ItemcatsGetResponse.ItemCats.ItemCat[0].Name)
 	time.Sleep(2 * time.Second)
 
 	propsUrl := fmt.Sprintf("https://open.taobao.com/handler/tools/getApiResult.json?isEn=false&env=2&format=json&apiName=taobao.itemprops.get&appKey=&fields=&cid=%d&pid=&parent_pid=&is_key_prop=&is_sale_prop=&is_color_prop=&is_enum_prop=&is_input_prop=&is_item_prop=&child_path=&type=&attr_keys=&appSource=0&_tb_token_=%s", cid, token)
@@ -77,7 +77,7 @@ func Fetch_props(cid int, token string) error {
 		return errors.New("该类目淘宝返回结果为空")
 	}
 
-	file, err := os.Create(fmt.Sprintf("%d-%s.csv", cid, cnameData.ItemcatsGetResponse.ItemCats.ItemCat[0].Name))
+	file, err := os.Create(fmt.Sprintf("%d.csv", cid))
 	if err != nil {
 		return errors.WithStack(err)
 	}
